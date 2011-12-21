@@ -72,7 +72,8 @@ class SystemUniversal
         thread = nil
 
         quietly{
-          IO.popen "#{ quote(@ruby) } #{ quote(c['program']) }", 'r+' do |pipe|
+          popen_arg1 = "#{ quote(@ruby) } #{ quote(c['program']) }"
+          IO.popen popen_arg1, 'r+' do |pipe|
             line = pipe.gets
             case line
               when %r/^pid: \d+$/
@@ -85,7 +86,7 @@ class SystemUniversal
                   raise unless Exception === e
                   raise e
                 rescue
-                  raise "wtf?\n#{ buf }\n"
+                  raise "wtf?\nutterly failed to process:\n#{popen_arg1}\nBuffer:\n#{ buf }\n"
                 end
             end
             thread = new_thread cid, @block if @block
